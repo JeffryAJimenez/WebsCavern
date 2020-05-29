@@ -4,6 +4,8 @@ module.exports = gql`
   extend type Query {
     posts(cursor: String, limit: Int): PostFeed!
     post(id: ID!): Post
+    postsByTittle(tittle: String!, cursor: String, limit: Int): PostFeed!
+    postsByAuthor(author: String, cursor: String, limit: Int): PostFeed!
   }
 
   input createPostInput {

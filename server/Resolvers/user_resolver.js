@@ -31,6 +31,16 @@ module.exports = {
         throw error;
       }
     }),
+
+    usersByUserName: async (_, { username }) => {
+      try {
+        const users = await User.find({ username });
+        return users;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
   },
 
   Mutation: {

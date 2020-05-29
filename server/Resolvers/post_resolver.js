@@ -49,6 +49,68 @@ module.exports = {
         }
       }
     ),
+
+    postsByTittle: async (_, { tittle, cursor, limit = 10 }) => {
+      try {
+        const query = { tittle };
+        if (cursor) {
+          query["_id"] = {
+            $lt: base64ToString(cursor),
+          };
+        }
+
+        let posts = await Post.find(query)
+          .sort({ author: -1 })
+          .limit(limit + 1);
+
+        const hasNextPage = posts.length > limit;
+        posts = hasNextPage ? posts.slice(0, -1) : posts;
+
+        return {
+          postFeed: posts,
+          pageInfo: {
+            nextPageCursor: hasNextPage
+              ? stringToBase64(posts[posts.length - 1].id)
+              : null,
+            hasNextPage,
+          },
+        };
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+
+    postsByAuthor: async (_, { author, cursor, limit = 10 }) => {
+      try {
+        const query = { author };
+        if (cursor) {
+          query["_id"] = {
+            $lt: base64ToString(cursor),
+          };
+        }
+
+        let posts = await Post.find(query)
+          .sort({ _id: -1 })
+          .limit(limit + 1);
+
+        const hasNextPage = posts.length > limit;
+        posts = hasNextPage ? posts.slice(0, -1) : posts;
+
+        return {
+          postFeed: posts,
+          pageInfo: {
+            nextPageCursor: hasNextPage
+              ? stringToBase64(posts[posts.length - 1].id)
+              : null,
+            hasNextPage,
+          },
+        };
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
   },
 
   Mutation: {
