@@ -12,6 +12,7 @@ module.exports = gql`
     tittle: String!
     author: String!
     url: String!
+    tags: [String]
   }
 
   input updatePostInput {
@@ -30,6 +31,7 @@ module.exports = gql`
     tittle: String!
     author: String!
     url: String!
+    tags: [String]
     user: User!
   }
 
