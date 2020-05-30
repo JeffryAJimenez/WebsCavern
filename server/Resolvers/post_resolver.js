@@ -50,9 +50,17 @@ module.exports = {
       }
     ),
 
-    postsByTittle: async (_, { tittle, cursor, limit = 10 }) => {
+    postsBy: async (_, { type_value, cursor, limit = 10 }) => {
       try {
-        const query = { tittle };
+        let query = null;
+
+        if (type_value[0] === "tittle") {
+          console.log("By tittle");
+          query = { tittle: type_value[1] };
+        } /*if(type_value[0] === "author")*/ else {
+          query = { author: type_value[1] };
+        }
+
         if (cursor) {
           query["_id"] = {
             $lt: base64ToString(cursor),
@@ -81,9 +89,9 @@ module.exports = {
       }
     },
 
-    postsByAuthor: async (_, { author, cursor, limit = 10 }) => {
+    postsByTags: async (_, { tags, cursor, limit = 10 }) => {
       try {
-        const query = { author };
+        const query = { tags: { $in: tags } };
         if (cursor) {
           query["_id"] = {
             $lt: base64ToString(cursor),
