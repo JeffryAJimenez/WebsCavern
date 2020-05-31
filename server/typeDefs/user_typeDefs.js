@@ -11,6 +11,7 @@ module.exports = gql`
   extend type Mutation {
     signup(input: signupInput): User
     login(input: loginInput): Token
+    editUser(id: ID!, input: editUserInput): User
   }
 
   extend type Subscription {
@@ -19,6 +20,13 @@ module.exports = gql`
 
   type Token {
     token: String!
+  }
+
+  input editUserInput {
+    name: String
+    username: String
+    email: String
+
   }
 
   input loginInput {

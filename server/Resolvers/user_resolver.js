@@ -4,7 +4,7 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
-const { isAuthenticated } = require("./middleware");
+const { isAuthenticated, isPorfileOwner} = require("./middleware");
 const PubSub = require("../subscription");
 const { userEvents } = require("../subscription/events");
 
@@ -44,6 +44,13 @@ module.exports = {
   },
 
   Mutation: {
+
+    editUser: combineResolvers(isAuthenticated, isPorfileOwner, (_, {id, input}, {loginUserId}) => {
+
+
+
+
+    }),
     signup: async (_, { input }) => {
       try {
         const user = await User.findOne({ email: input.email });
