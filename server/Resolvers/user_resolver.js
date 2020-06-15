@@ -4,6 +4,7 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
+const Admin = require("../database/models/Admin");
 const { isAuthenticated, isPorfileOwner } = require("./middleware");
 const PubSub = require("../subscription");
 const { userEvents } = require("../subscription/events");
@@ -44,6 +45,20 @@ module.exports = {
   },
 
   Mutation: {
+    deleteUser: combineResolvers(
+      isAuthenticated,
+      isPorfileOwner,
+      async (_, { id }, { loginUserId }) => {
+        try {
+          const user = await User.findByIdAndRemove(id);
+          return user;
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      }
+    ),
+
     editUser: combineResolvers(
       isAuthenticated,
       isPorfileOwner,
@@ -85,6 +100,51 @@ module.exports = {
         return result;
       } catch (error) {
         console.log(error);
+      }
+    },
+
+    createAdmin: async (_, { input }) => {
+      try {
+        const user = await User.findOne({ email: input.email });
+
+        if (user) {
+          throw new Error("Email already exists");
+        }
+
+        if (input.password !== input.password2) {
+          throw new Error("Passwords do not match");
+        }
+
+        const hashedPassword = await bcrypt.hash(input.password, 12);
+        const { password2, ...other } = input;
+
+        const newUser = new User({ ...other, password: hashedPassword });
+        const result = await newUser.save();
+
+        const permissions = [
+          { name: "read", permit: true },
+          { name: "update", permit: true },
+          { name: "delete", permit: true },
+          { name: "create", permit: true },
+        ];
+        const admin = new Admin({ permissions, user: newUser.id }); //new USER AUTH.. DONT WANT IT
+        console.log(newUser.id);
+        await admin.save();
+
+        const updatedUser = await User.findByIdAndUpdate(
+          result.id,
+          { roles: { admin: admin.id } },
+          { new: true }
+        );
+
+        PubSub.publish(userEvents.USER_CREATED, {
+          userCreated: result,
+        });
+
+        return updatedUser;
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
     },
 

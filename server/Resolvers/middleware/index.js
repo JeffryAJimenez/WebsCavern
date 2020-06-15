@@ -1,6 +1,6 @@
 const { skip } = require("graphql-resolvers");
 const Post = require("../../database/models/postSchema");
-const User = require("../../database/models/userSchema")
+const User = require("../../database/models/userSchema");
 const { isValidObjectId } = require("../../database/util");
 
 module.exports.isAuthenticated = (_, __, { email }) => {
@@ -32,24 +32,42 @@ module.exports.isPostOwner = async (_, { id }, { loggedInUserId }) => {
   }
 };
 
-module.exports.isPorfileOwner = async (_, {id}, {loggedInUserId}) => {
+module.exports.isPorfileOwner = async (_, { id }, { loggedInUserId }) => {
   try {
-    if(!isValidObjectId(id)){
-      throw new Error("Invalid user id")
+    if (!isValidObjectId(id)) {
+      throw new Error("Invalid user id");
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(id);
 
-    if(!user){
-      throw new Error("User not found")
-    }else if(user._id.toString() !== loggedInUserId){
-      throw new Error("This profile does not belong to you")
+    if (!user) {
+      throw new Error("User not found");
+    } else if (user._id.toString() !== loggedInUserId) {
+      throw new Error("This profile does not belong to you");
     }
 
-    return skip
-    
+    return skip;
   } catch (error) {
-    console.log(error)
-    throw error
+    console.log(error);
+    throw error;
   }
-}
+};
+
+module.exports.isAdmin = async (_, { id }, { loggedInUserId }) => {
+  try {
+    if (!isValidObjectId(id)) {
+      throw new Error("Invalid user ID");
+    }
+
+    const user = await User.findById(loggedInUserId);
+
+    if (!user.roles.admin) {
+      throw new Error("User is not an administrator");
+    }
+
+    return skip;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

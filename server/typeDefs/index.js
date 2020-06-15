@@ -1,6 +1,7 @@
 const { gql } = require("apollo-server-express");
 const userTypeDefs = require("./user_typeDefs");
 const postTypeDefs = require("./posts_typeDefs");
+const adminTypeDefs = require("./admin_typeDefs");
 
 // _  is a placeholder so other Roots can extend
 const typeDefs = gql`
@@ -17,4 +18,4 @@ const typeDefs = gql`
   }
 `;
 
-module.exports = [typeDefs, userTypeDefs, postTypeDefs];
+module.exports = [typeDefs, userTypeDefs, postTypeDefs, adminTypeDefs];

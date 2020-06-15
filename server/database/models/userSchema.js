@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    roles: {
+      admin: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+    },
+
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   },
   {

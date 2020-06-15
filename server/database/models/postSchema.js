@@ -19,6 +19,15 @@ const postSchema = new mongoose.Schema(
       type: [String],
     },
 
+    commets: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        username: { type: String },
+        text: { type: String },
+        date: { type: Date, default: Date.now },
+      },
+    ],
+
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   {
