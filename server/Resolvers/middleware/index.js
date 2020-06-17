@@ -71,3 +71,34 @@ module.exports.isAdmin = async (_, { id }, { loggedInUserId }) => {
     throw error;
   }
 };
+
+module.exports.isCommentOwner = async (
+  _,
+  { post_id, comment_id },
+  { loggedInUserId }
+) => {
+  try {
+    if (!isValidObjectId(post_id)) {
+      throw new Error("invalid POST id");
+    }
+    if (!isValidObjectId(comment_id)) {
+      throw new Error("invalid Comment id");
+    }
+
+    const post = await Post.findById(post_id);
+    const comment = post.comments.find((comment) => comment.id === comment_id);
+
+    if (!comment) {
+      throw new Error("Comment doest not exist");
+    }
+
+    if (comment.user.toString() !== loggedInUserId) {
+      throw new Error("Comment does not belong logged in user");
+    }
+
+    return skip;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

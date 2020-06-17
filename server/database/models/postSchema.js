@@ -19,7 +19,7 @@ const postSchema = new mongoose.Schema(
       type: [String],
     },
 
-    commets: [
+    comments: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         username: { type: String },
@@ -27,6 +27,8 @@ const postSchema = new mongoose.Schema(
         date: { type: Date, default: Date.now },
       },
     ],
+
+    likes: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: "User" } }],
 
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
