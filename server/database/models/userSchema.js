@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema(
       admin: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
     },
 
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profile",
+    },
+
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   },
   {

@@ -2,6 +2,7 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const Post = require("../database/models/postSchema");
 const User = require("../database/models/userSchema");
+const Profile = require("../database/models/Profile");
 const { isAuthenticated, isPostOwner } = require("./middleware");
 const { stringToBase64, base64ToString } = require("../helper");
 
@@ -127,10 +128,17 @@ module.exports = {
       isPostOwner,
       async (_, { id }, { loggedInUserId }) => {
         const post = await Post.findByIdAndRemove(id);
-        await User.updateOne(
-          { _id: loggedInUserId },
+
+        //remove post from the profile
+        await Profile.updateOne(
+          { user: loggedInUserId },
           { $pull: { posts: post.id } }
         );
+
+        //update postsSize
+        const profile = await Profile.findOne({ user: loggedInUserId });
+        profile.postSize = profile.posts.length;
+        await profile.save();
 
         return post;
       }
@@ -156,14 +164,16 @@ module.exports = {
     ),
     createPost: combineResolvers(
       isAuthenticated,
-      async (_, { input }, { email }) => {
+      async (_, { input }, { email, loggedInUserId }) => {
         try {
           //create Post -> Give post User._ID -> give User Post._ID
-          const user = await User.findOne({ email });
-          const post = new Post({ ...input, user: user.id });
+          //const user = await User.findOne({ email });
+          const profile = await Profile.findOne({ user: loggedInUserId });
+          const post = new Post({ ...input, user: loggedInUserId });
           const result = await post.save();
-          user.posts.push(result.id);
-          await user.save();
+          profile.posts.push(result.id);
+          profile.size = profile.posts.length;
+          await profile.save();
 
           return post;
         } catch (error) {

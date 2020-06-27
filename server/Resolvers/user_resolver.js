@@ -4,7 +4,9 @@ const { combineResolvers } = require("graphql-resolvers");
 
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
+const Profile = require("../database/models/Profile");
 const Admin = require("../database/models/Admin");
+const CollectionSCH = require("../database/models/Collection");
 const { isAuthenticated, isPorfileOwner } = require("./middleware");
 const PubSub = require("../subscription");
 const { userEvents } = require("../subscription/events");
@@ -51,6 +53,12 @@ module.exports = {
       async (_, { id }, { loginUserId }) => {
         try {
           const user = await User.findByIdAndRemove(id);
+          const profile = await Profile.findByIdAndDelete(user.profile);
+
+          //delete posts and collections
+          await Post.deleteMany({ _id: { $in: profile.posts } });
+          await CollectionSCH.deleteMany({ _id: { $in: profile.collections } });
+
           return user;
         } catch (error) {
           console.log(error);
@@ -93,6 +101,16 @@ module.exports = {
         const newUser = new User({ ...other, password: hashedPassword });
         const result = await newUser.save();
 
+        //profile
+        const profile = new Profile({
+          user: result.id,
+          collectionsSize: 0,
+          postSize: 0,
+        });
+        await profile.save();
+
+        await User.findByIdAndUpdate(result.id, { profile: profile.id });
+
         PubSub.publish(userEvents.USER_CREATED, {
           userCreated: result,
         });
@@ -121,6 +139,10 @@ module.exports = {
         const newUser = new User({ ...other, password: hashedPassword });
         const result = await newUser.save();
 
+        //Profile
+        const newProfile = new Profile({ user: result.id });
+        await newProfile.save();
+
         const permissions = [
           { name: "read", permit: true },
           { name: "update", permit: true },
@@ -133,7 +155,7 @@ module.exports = {
 
         const updatedUser = await User.findByIdAndUpdate(
           result.id,
-          { roles: { admin: admin.id } },
+          { roles: { admin: admin.id }, profile: newProfile.id },
           { new: true }
         );
 

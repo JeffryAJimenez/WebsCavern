@@ -1,6 +1,7 @@
 const { skip } = require("graphql-resolvers");
 const Post = require("../../database/models/postSchema");
 const User = require("../../database/models/userSchema");
+const ColLectionSCH = require("../../database/models/Collection");
 const { isValidObjectId } = require("../../database/util");
 
 module.exports.isAuthenticated = (_, __, { email }) => {
@@ -94,6 +95,33 @@ module.exports.isCommentOwner = async (
 
     if (comment.user.toString() !== loggedInUserId) {
       throw new Error("Comment does not belong logged in user");
+    }
+
+    return skip;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports.isCollectionOwner = async (
+  _,
+  { col_ID },
+  { loggedInUserId }
+) => {
+  try {
+    if (!isValidObjectId(col_ID)) {
+      throw new Error("invalid Collection id");
+    }
+
+    const col = await ColLectionSCH.findById(col_ID);
+
+    if (!col) {
+      throw new Error("Collection does not exist");
+    }
+
+    if (col.user.toString() !== loggedInUserId) {
+      throw new Error("This Collection does not belong to the user");
     }
 
     return skip;

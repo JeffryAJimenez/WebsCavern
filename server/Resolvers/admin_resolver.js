@@ -3,6 +3,7 @@ const { combineResolvers } = require("graphql-resolvers");
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
 const Admin = require("../database/models/Admin");
+const Profile = require("../database/models/Profile");
 const { isAuthenticated, isAdmin } = require("./middleware");
 
 module.exports = {
@@ -21,10 +22,23 @@ module.exports = {
             throw new Error("This user cannot delete posts");
           }
 
-          const post = Post.findByIdAndRemove(id);
+          const post = await Post.findById(id);
           if (!post) {
             throw new Error("Post was not found");
           }
+
+          const profile = await Profile.findOne({ user: post.user });
+
+          if (!profile) {
+            throw new Error("Profile was not found");
+          }
+
+          //remove Post
+          await Profile.updateOne(
+            { user: post.user },
+            { $pull: { posts: post.id } }
+          );
+          await post.remove();
 
           return post;
         } catch (error) {
@@ -42,7 +56,7 @@ module.exports = {
           //test this !!!!!!!!!
 
           const admin = await Admin.findOne({ user: loggedInUserId });
-          const permit = admin.hasPermissionTo("Delete");
+          const permit = admin.hasPermissionTo("delete");
 
           console.log("======", permit);
           if (!permit) {
@@ -50,6 +64,12 @@ module.exports = {
           }
 
           const user = await User.findByIdAndRemove(id);
+          const profile = await Profile.findByIdAndDelete(user.profile);
+          console.log(profile.posts);
+
+          //delete all posts
+          await Post.deleteMany({ _id: { $in: profile.posts } });
+
           if (!user) {
             throw new Error("user was not found");
           }

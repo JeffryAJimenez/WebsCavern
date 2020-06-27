@@ -4,6 +4,7 @@ const postTypeDefs = require("./posts_typeDefs");
 const adminTypeDefs = require("./admin_typeDefs");
 const commentTypeDefs = require("./comment_typeDefs");
 const likeTypeDefs = require("./like_typeDefs");
+const collectionTypeDefs = require("./collection_typeDefs");
 
 // _  is a placeholder so other Roots can extend
 const typeDefs = gql`
@@ -27,4 +28,5 @@ module.exports = [
   adminTypeDefs,
   commentTypeDefs,
   likeTypeDefs,
+  collectionTypeDefs,
 ];
