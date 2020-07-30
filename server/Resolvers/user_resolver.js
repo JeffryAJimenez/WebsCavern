@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { combineResolvers } = require("graphql-resolvers");
+const validator = require("validator");
 
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
@@ -86,7 +87,15 @@ module.exports = {
     ),
     signup: async (_, { input }) => {
       try {
+        if (!validator.isEmail(input.email)) {
+          throw new Error("Not a correct email");
+        }
+
         const user = await User.findOne({ email: input.email });
+
+        if (await User.findOne({ username: input.username })) {
+          throw new Error("Username already in use");
+        }
 
         if (user) {
           throw new Error("Email already exists");
@@ -98,7 +107,10 @@ module.exports = {
 
         const hashedPassword = await bcrypt.hash(input.password, 12);
         const { password2, ...other } = input;
-        const newUser = new User({ ...other, password: hashedPassword });
+        const newUser = new User({
+          ...other,
+          password: hashedPassword,
+        });
         const result = await newUser.save();
 
         //profile
@@ -118,6 +130,7 @@ module.exports = {
         return result;
       } catch (error) {
         console.log(error);
+        throw error;
       }
     },
 
