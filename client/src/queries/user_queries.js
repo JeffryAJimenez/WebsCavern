@@ -22,4 +22,12 @@ const resgisterUserMutation = gql`
   }
 `;
 
-export { resgisterUserMutation };
+const loginUserMutation = gql`
+  mutation($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      token
+    }
+  }
+`;
+
+export { resgisterUserMutation, loginUserMutation };

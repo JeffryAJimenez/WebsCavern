@@ -12,12 +12,18 @@ import {
 
 //Components
 import Navbar from "./components/layout/Navbar";
-import Register from "./components/Register";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
 
 //apollo setup
+import { cache } from "./cache";
+
 const client = new ApolloClient({
   uri: "http://localhost:3001/graphql",
-  cache: new InMemoryCache(),
+  cache,
+  headers: {
+    Authorization: localStorage.getItem("token") || "",
+  },
 });
 
 const App = () => {
@@ -30,6 +36,7 @@ const App = () => {
             <section className='container_body'>
               <Switch>
                 <Route exact path='/Register' component={Register}></Route>
+                <Route exact path='/Login' component={Login}></Route>
               </Switch>
             </section>
           </section>

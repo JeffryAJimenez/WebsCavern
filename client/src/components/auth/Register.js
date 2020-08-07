@@ -1,14 +1,18 @@
 import React, { Fragment, useState } from "react";
-import { useMutation } from "@apollo/client";
-import { Link } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
+import { Link, Redirect } from "react-router-dom";
 
 //Mutation
-import { resgisterUserMutation } from "../queries/user_queries";
+import { resgisterUserMutation } from "../../queries/user_queries";
+import { IsUserLoggedInQuery } from "../../queries/client_quieres";
 
-import Alert from "./layout/Alert";
-import Spinner from "./layout/Spinner";
+import Alert from "../layout/Alert";
+import Spinner from "../layout/Spinner";
+import { isLoggedInVar } from "../../cache";
 
 const Register = () => {
+  const { data: isLoggedIn } = useQuery(IsUserLoggedInQuery);
+
   const [
     resgisterUser,
     { data, loading: loading_SignUp, error: error_SignUp },
@@ -47,7 +51,9 @@ const Register = () => {
     }
   };
 
-  return (
+  return isLoggedIn.isLoggedIn ? (
+    <Redirect to='/posts' />
+  ) : (
     <Fragment>
       <div className='showcase_logIn'>
         {loading_SignUp ? <Spinner /> : null}
