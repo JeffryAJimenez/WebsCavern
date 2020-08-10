@@ -7,6 +7,7 @@ const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
 const Profile = require("../database/models/Profile");
 const Admin = require("../database/models/Admin");
+const { isValidObjectId } = require("../database/util");
 const CollectionSCH = require("../database/models/Collection");
 const { isAuthenticated, isPorfileOwner } = require("./middleware");
 const PubSub = require("../subscription");
@@ -14,8 +15,23 @@ const { userEvents } = require("../subscription/events");
 
 module.exports = {
   Query: {
-    user: combineResolvers(isAuthenticated, (_, { id }, { email }) => {
-      console.log("====", email);
+    user: combineResolvers(async (_, { id }, { email }) => {
+      try {
+        if (!isValidObjectId(id)) {
+          throw new Error("Invalid Post id");
+        }
+
+        const user = await User.findById(id);
+
+        if (!user) {
+          throw new Error("User not found!");
+        }
+
+        return user;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
     }),
     users: () => [
       { id: 1, email: "testEmail", username: "moose" },
@@ -208,6 +224,7 @@ module.exports = {
         return { token };
       } catch (error) {
         console.log(error);
+        throw error;
       }
     },
   },

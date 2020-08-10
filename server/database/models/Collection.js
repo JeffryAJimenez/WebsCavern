@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const CollectionSchema = mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
+  banner: [{ type: String }],
+
   tittle: { type: String },
 
   size: { type: Number },

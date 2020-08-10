@@ -101,6 +101,13 @@ module.exports = {
         console.log(mod);
 
         if (mod["nModified"] !== 0) {
+          if (col.banner.length < 4) {
+            //fix this later
+            const ids = post_ID.slice(0, 4 - col.banner.length);
+            const posts = await Post.find({ _id: { $in: ids } });
+
+            posts.map((post) => col.banner.push(post.url));
+          }
           col.size = col.posts.length;
           await col.save();
         }
@@ -114,8 +121,18 @@ module.exports = {
       async (_, { tittle, post_ID }, { loggedInUserId }) => {
         try {
           const profile = await Profile.findOne({ user: loggedInUserId });
+          const ids = post_ID.slice(0, 4);
+          const posts = await Post.find({ _id: { $in: ids } });
 
-          var newCo_OBJ = { tittle, user: loggedInUserId, size: 0 };
+          const urls = posts.map((post) => post.url);
+
+          var newCo_OBJ = {
+            tittle,
+            user: loggedInUserId,
+            size: 0,
+            banner: post_ID ? urls : [],
+            posts: [],
+          };
           post_ID
             ? (newCo_OBJ = {
                 ...newCo_OBJ,

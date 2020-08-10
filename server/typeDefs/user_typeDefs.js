@@ -50,5 +50,6 @@ module.exports = gql`
     email: String!
     password: String!
     posts: [Post!]
+    profile: ID!
   }
 `;

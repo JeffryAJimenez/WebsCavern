@@ -21,6 +21,7 @@ module.exports = gql`
   type Collection {
     id: ID!
     user: ID!
+    banner: [String!]
     size: Int!
     tittle: String!
     posts: [ID!]
