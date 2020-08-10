@@ -30,4 +30,31 @@ const loginUserMutation = gql`
   }
 `;
 
-export { resgisterUserMutation, loginUserMutation };
+const getLoggedInUseQuery = gql`
+  query {
+    currentUser {
+      id
+      name
+      email
+      username
+      profile
+    }
+  }
+`;
+
+const getUserByIdQuery = gql`
+  query($id: ID!) {
+    user(id: $id) {
+      username
+      email
+      profile
+    }
+  }
+`;
+
+export {
+  resgisterUserMutation,
+  loginUserMutation,
+  getLoggedInUseQuery,
+  getUserByIdQuery,
+};

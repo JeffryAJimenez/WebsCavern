@@ -1,12 +1,24 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-import { useQuery, useApolloClient } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { IsUserLoggedInQuery } from "../../queries/client_quieres";
+import { getLoggedInUseQuery } from "../../queries/user_queries";
 import { isLoggedInVar } from "../../cache";
 
 const Navbar = () => {
-  const { data } = useQuery(IsUserLoggedInQuery);
+  const [getUser, { loading, data: userInfo }] = useLazyQuery(
+    getLoggedInUseQuery
+  );
+
+  const { data } = useQuery(IsUserLoggedInQuery, {
+    onCompleted({ isLoggedIn }) {
+      if (isLoggedIn) {
+        getUser();
+      }
+    },
+    pollInterval: 1000,
+  });
 
   return (
     <header id='main_header'>
@@ -22,7 +34,7 @@ const Navbar = () => {
       <div className='clr'></div>
 
       <ul id='header_nav'>
-        {data.isLoggedIn ? (
+        {data.isLoggedIn && !loading && userInfo ? (
           <Fragment>
             <li>
               <a href='/PostsScreen.html'>Posts</a>
@@ -36,6 +48,11 @@ const Navbar = () => {
             <li>
               <a>Tags</a>
             </li>
+
+            <li>
+              <Link to={`/profile/${userInfo.currentUser.id}`}>Profile</Link>
+            </li>
+
             <li>
               <button
                 onClick={() => {
@@ -62,7 +79,7 @@ const Navbar = () => {
               <a>Tags</a>
             </li>
             <li>
-              <Link to='Login'>Login</Link>
+              <Link to='/Login'>Login</Link>
             </li>
             <li>
               <Link to='/Register'>Register</Link>

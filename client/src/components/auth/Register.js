@@ -8,7 +8,6 @@ import { IsUserLoggedInQuery } from "../../queries/client_quieres";
 
 import Alert from "../layout/Alert";
 import Spinner from "../layout/Spinner";
-import { isLoggedInVar } from "../../cache";
 
 const Register = () => {
   const { data: isLoggedIn } = useQuery(IsUserLoggedInQuery);

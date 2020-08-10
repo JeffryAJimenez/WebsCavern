@@ -3,17 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 
 //apollo-gql
-import {
-  ApolloProvider,
-  ApolloClient,
-  InMemoryCache,
-  gql,
-} from "@apollo/client";
+import { ApolloProvider, ApolloClient } from "@apollo/client";
 
 //Components
 import Navbar from "./components/layout/Navbar";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import Profile from "./components/profile/Profile";
 
 //apollo setup
 import { cache } from "./cache";
@@ -22,7 +18,9 @@ const client = new ApolloClient({
   uri: "http://localhost:3001/graphql",
   cache,
   headers: {
-    Authorization: localStorage.getItem("token") || "",
+    Authorization: localStorage.getItem("token")
+      ? `Bearer ${localStorage.getItem("token")}`
+      : "",
   },
 });
 
@@ -37,6 +35,7 @@ const App = () => {
               <Switch>
                 <Route exact path='/Register' component={Register}></Route>
                 <Route exact path='/Login' component={Login}></Route>
+                <Route exact path='/profile/:id' component={Profile}></Route>
               </Switch>
             </section>
           </section>
