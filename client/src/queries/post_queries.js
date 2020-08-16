@@ -14,4 +14,17 @@ const getPostByIdQuery = gql`
   }
 `;
 
-export { getPostByIdQuery };
+const createPostMutation = gql`
+  mutation($tittle: String!, $author: String!, $url: String!, $tags: [String]) {
+    createPost(
+      input: { tittle: $tittle, author: $author, url: $url, tags: $tags }
+    ) {
+      url
+      author
+      tittle
+      tags
+    }
+  }
+`;
+
+export { getPostByIdQuery, createPostMutation };

@@ -1,4 +1,5 @@
 import React from "react";
+import { Image } from "cloudinary-react";
 
 //mutation
 import { useQuery } from "@apollo/client";
@@ -27,7 +28,7 @@ const Profile_Post = ({ id }) => {
   return (
     <div className='profile_post' id={post.id}>
       <h5>Image</h5>
-      <img src={post.post.url}></img>
+      <Image publicId={post.post.url} cloudName='weebcavern-test' />
     </div>
   );
 };
