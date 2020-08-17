@@ -33,6 +33,7 @@ module.exports = gql`
     url: String!
     tags: [String]
     user: User!
+    comments: [Comment!]
   }
 
   type PostFeed {

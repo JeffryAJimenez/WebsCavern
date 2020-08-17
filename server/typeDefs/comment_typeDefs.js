@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   extend type Mutation {
-    createComment(postId: ID!, input: String): [Comment]!
+    createComment(postId: ID!, input: String!): [Comment]
     deleteComment(post_id: ID!, comment_id: ID!): [Comment]
   }
 
@@ -10,7 +10,8 @@ module.exports = gql`
     id: ID
     user: String
     username: String
+    avatar: String
     text: String
-    date: Int
+    date: Date
   }
 `;

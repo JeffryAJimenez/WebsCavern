@@ -22,6 +22,7 @@ const postSchema = new mongoose.Schema(
     comments: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        avatar: { type: String },
         username: { type: String },
         text: { type: String },
         date: { type: Date, default: Date.now },

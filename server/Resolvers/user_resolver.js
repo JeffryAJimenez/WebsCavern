@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { combineResolvers } = require("graphql-resolvers");
 const validator = require("validator");
+const cloudinary = require("cloudinary");
+const dotEnv = require("dotenv");
 
 const User = require("../database/models/userSchema");
 const Post = require("../database/models/postSchema");
@@ -73,8 +75,22 @@ module.exports = {
           const profile = await Profile.findByIdAndDelete(user.profile);
 
           //delete posts and collections
+          const posts = await Post.find({ _id: { $in: profile.posts } });
           await Post.deleteMany({ _id: { $in: profile.posts } });
           await CollectionSCH.deleteMany({ _id: { $in: profile.collections } });
+
+          const arrayOfIds = posts.map((post) => {
+            return post.url;
+          });
+
+          //cloudinary setup
+          cloudinary.config({
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET,
+          });
+
+          await cloudinary.v2.api.delete_resources(arrayOfIds);
 
           return user;
         } catch (error) {
@@ -126,6 +142,7 @@ module.exports = {
         const newUser = new User({
           ...other,
           password: hashedPassword,
+          avatar: "default_hzfcdm",
         });
         const result = await newUser.save();
 

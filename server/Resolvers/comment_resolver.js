@@ -12,6 +12,7 @@ module.exports = {
         try {
           const post = await Post.findById(postId);
 
+          console.log("The postId is: ", postId);
           if (!post) {
             throw new Error("Post does not exists");
           }
@@ -22,6 +23,7 @@ module.exports = {
             username: user.username,
             text: input,
             user: loggedInUserId,
+            avatar: user.avatar,
           };
 
           post.comments.unshift(comment);

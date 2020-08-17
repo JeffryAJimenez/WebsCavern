@@ -10,6 +10,7 @@ import Navbar from "./components/layout/Navbar";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Profile from "./components/profile/Profile";
+import Post from "./components/view_post/ViewPost";
 
 //apollo setup
 import { cache } from "./cache";
@@ -36,6 +37,7 @@ const App = () => {
                 <Route exact path='/Register' component={Register}></Route>
                 <Route exact path='/Login' component={Login}></Route>
                 <Route exact path='/profile/:id' component={Profile}></Route>
+                <Route exact path='/post/:id' component={Post}></Route>
               </Switch>
             </section>
           </section>

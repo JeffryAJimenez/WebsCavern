@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
+import Moment from "react-moment";
+import { Image } from "cloudinary-react";
 
 //Queries && Mutations
 import { useQuery, useLazyQuery } from "@apollo/client";
@@ -51,16 +53,20 @@ const Profile = () => {
       {user && profile ? (
         <div className='profile'>
           <div className='profile_header'>
-            <img
-              src={require("../../images/pfpAyuwoki.jpg")}
-              alt='OwO PFP not Found!'
-            ></img>
+            <Image
+              publicId={user.user.avatar}
+              cloudName='weebcavern-test'
+            ></Image>
             <h4>{user.user.username}</h4>
             <h6>
               {" "}
               {`posts: ${profile.profile.postSize} | collections: ${profile.profile.collectionsSize}`}
             </h6>
-            <h6> member since: 06/04/2020</h6>
+            <h6>
+              {" "}
+              {`member since: `}{" "}
+              <Moment format='MM/DD/YYYY'>{user.user.createdAt}</Moment>
+            </h6>
           </div>
 
           <div className='profile_tabs'>

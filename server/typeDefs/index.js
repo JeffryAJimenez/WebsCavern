@@ -9,6 +9,8 @@ const profileTypeDefs = require("./profile_typeDefs");
 
 // _  is a placeholder so other Roots can extend
 const typeDefs = gql`
+  scalar Date
+
   type Query {
     _: String
   }

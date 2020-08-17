@@ -38,6 +38,7 @@ const getLoggedInUseQuery = gql`
       email
       username
       profile
+      createdAt
     }
   }
 `;
@@ -48,6 +49,7 @@ const getUserByIdQuery = gql`
       username
       email
       profile
+      avatar
     }
   }
 `;

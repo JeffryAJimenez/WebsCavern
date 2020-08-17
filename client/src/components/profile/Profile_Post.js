@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Image } from "cloudinary-react";
 
 //mutation
@@ -26,10 +27,12 @@ const Profile_Post = ({ id }) => {
   }
 
   return (
-    <div className='profile_post' id={post.id}>
-      <h5>Image</h5>
-      <Image publicId={post.post.url} cloudName='weebcavern-test' />
-    </div>
+    <Link to={`/post/${post.post.id}`}>
+      <div className='profile_post' id={post.id}>
+        <h5>Image</h5>
+        <Image publicId={post.post.url} cloudName='weebcavern-test' />
+      </div>
+    </Link>
   );
 };
 

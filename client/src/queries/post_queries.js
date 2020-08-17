@@ -14,6 +14,27 @@ const getPostByIdQuery = gql`
   }
 `;
 
+const getPostByIdQuery_comments = gql`
+  query($id: ID!) {
+    post(id: $id) {
+      id
+      tittle
+      author
+      url
+      user {
+        username
+      }
+      comments {
+        user
+        username
+        text
+        date
+        avatar
+      }
+    }
+  }
+`;
+
 const createPostMutation = gql`
   mutation($tittle: String!, $author: String!, $url: String!, $tags: [String]) {
     createPost(
@@ -27,4 +48,4 @@ const createPostMutation = gql`
   }
 `;
 
-export { getPostByIdQuery, createPostMutation };
+export { getPostByIdQuery, createPostMutation, getPostByIdQuery_comments };
