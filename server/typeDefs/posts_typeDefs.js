@@ -34,6 +34,7 @@ module.exports = gql`
     tags: [String]
     user: User!
     comments: [Comment!]
+    likes: [LikeOutput]
   }
 
   type PostFeed {

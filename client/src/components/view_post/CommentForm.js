@@ -6,6 +6,7 @@ import Spinner from "../layout/Spinner";
 
 //queries
 import { createCommentMutation } from "../../queries/comment_queries";
+import { getPostByIdQuery_comments } from "../../queries/post_queries";
 
 const CommentForm = ({ postID }) => {
   const [text, setText] = useState("");
@@ -15,6 +16,10 @@ const CommentForm = ({ postID }) => {
       onCompleted() {
         setText("");
       },
+
+      refetchQueries: [
+        { query: getPostByIdQuery_comments, variables: { id: postID } },
+      ],
     }
   );
 

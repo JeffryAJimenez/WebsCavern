@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { getPostByIdQuery_comments } from "../../queries/post_queries";
 
 //components
+import Sidebar from "../layout/Sidebar";
 import Comment from "./Comment";
 import Image from "./Image";
 import CommentForm from "./CommentForm";
@@ -26,12 +27,13 @@ const ViewPost = () => {
 
   return post ? (
     <Fragment>
+      <Sidebar />
       <div className='showcase_image_view'>
         <Image post={post} />
         <div className='comments_display'>
           {post.post.comments.length > 0 ? (
             post.post.comments.map((comment) => {
-              return <Comment comment={comment} />;
+              return <Comment comment={comment} postId={id} />;
             })
           ) : (
             <p style={{ color: "#000" }}>Be the first to comment!</p>

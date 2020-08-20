@@ -8,7 +8,7 @@ const { stringToBase64, base64ToString } = require("../helper");
 
 module.exports = {
   Query: {
-    post: combineResolvers(isAuthenticated, isPostOwner, async (_, { id }) => {
+    post: combineResolvers(async (_, { id }) => {
       try {
         const post = Post.findById(id);
         return post;
@@ -19,7 +19,6 @@ module.exports = {
     }),
 
     posts: combineResolvers(
-      isAuthenticated,
       async (_, { cursor, limit = 10 }, { loggedInUserId }) => {
         try {
           const query = { user: loggedInUserId };

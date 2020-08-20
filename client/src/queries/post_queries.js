@@ -22,14 +22,19 @@ const getPostByIdQuery_comments = gql`
       author
       url
       user {
+        id
         username
       }
       comments {
+        id
         user
         username
         text
         date
         avatar
+      }
+      likes {
+        user
       }
     }
   }

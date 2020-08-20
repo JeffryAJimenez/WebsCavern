@@ -18,6 +18,8 @@ const Login = () => {
       localStorage.setItem("token", login.token);
       isLoggedInVar(true);
     },
+
+    refetchQueries: [{ query: IsUserLoggedInQuery }],
   });
 
   const [formData, setFormData] = useState({
