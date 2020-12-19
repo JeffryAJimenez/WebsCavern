@@ -46,6 +46,24 @@ body {
   font-size: 16px;
 }
 
+.error-notice {
+  margin-bottom: 0;
+  padding: 10px 0px 10px 10px;
+  display: flex;
+  height: 20px;
+  background-color: #dc3545;
+  font: normal 16px Arial, Helvetica, sans-serif;
+  color: #fff;
+  align-items: center;
+}
+
+.logout {
+  border: none;
+  background: none;
+  color: #fff;
+  font: normal 16px Arial, Helvetica, sans-serif;
+  margin: 0;
+}
 /*Header Styles ---------------------------------------------------------------------*/
 
 #main_header {

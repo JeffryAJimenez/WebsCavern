@@ -29,7 +29,7 @@ const CommentForm = ({ postID }) => {
     try {
       await createComment({ variables: { postId: postID, input: text } });
     } catch (err) {
-      console.log(err);
+      console.log('error:', err);
     }
   };
 
@@ -39,6 +39,7 @@ const CommentForm = ({ postID }) => {
         <Spinner />
       ) : (
         <Fragment>
+          {error ? <div class="error-notice">{error.message}</div> : <div></div>}
           <div className='bg-primary p'>
             <h3>Leave a Comment</h3>
           </div>

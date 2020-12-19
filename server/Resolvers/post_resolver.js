@@ -18,37 +18,35 @@ module.exports = {
       }
     }),
 
-    posts: combineResolvers(
-      async (_, { cursor, limit = 10 }, { loggedInUserId }) => {
-        try {
-          const query = { user: loggedInUserId };
-          if (cursor) {
-            query["_id"] = {
-              $lt: base64ToString(cursor),
-            };
-          }
-
-          let posts = await Post.find(query)
-            .sort({ _id: -1 })
-            .limit(limit + 1);
-          const hasNextPage = posts.length > limit;
-          posts = hasNextPage ? posts.slice(0, -1) : posts;
-
-          return {
-            postFeed: posts,
-            pageInfo: {
-              nextPageCursor: hasNextPage
-                ? stringToBase64(posts[posts.length - 1].id)
-                : null,
-              hasNextPage,
-            },
+    posts: combineResolvers(async (_, { cursor, limit = 10 }, __) => {
+      try {
+        const query = {};
+        if (cursor) {
+          query["_id"] = {
+            $lt: base64ToString(cursor),
           };
-        } catch (error) {
-          console.log(error);
-          throw error;
         }
+
+        let posts = await Post.find(query)
+          .sort({ _id: -1 })
+          .limit(limit + 1);
+        const hasNextPage = posts.length > limit;
+        posts = hasNextPage ? posts.slice(0, -1) : posts;
+
+        return {
+          postFeed: posts,
+          pageInfo: {
+            nextPageCursor: hasNextPage
+              ? stringToBase64(posts[posts.length - 1].id)
+              : null,
+            hasNextPage,
+          },
+        };
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
-    ),
+    }),
 
     postsBy: async (_, { type_value, cursor, limit = 10 }) => {
       try {

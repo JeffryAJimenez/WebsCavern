@@ -17,6 +17,7 @@ const Login = () => {
     onCompleted({ login }) {
       localStorage.setItem("token", login.token);
       isLoggedInVar(true);
+      window.location.replace("/")
     },
 
     refetchQueries: [{ query: IsUserLoggedInQuery }],

@@ -8,7 +8,7 @@ module.exports = {
   Mutation: {
     createComment: combineResolvers(
       isAuthenticated,
-      async (_, { postId, input }, { loggedInUserId }) => {
+      async (_, { postId, input }, {email, loggedInUserId }) => {
         try {
           const post = await Post.findById(postId);
 

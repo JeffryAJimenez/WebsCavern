@@ -37,7 +37,7 @@ const Navbar = () => {
         {data.isLoggedIn && !loading && userInfo ? (
           <Fragment>
             <li>
-              <a href='/PostsScreen.html'>Posts</a>
+              <Link to={`/posts`}>Posts</Link>
             </li>
             <li>
               <a href='CollectionsScreen.html'> Collection</a>
@@ -54,10 +54,11 @@ const Navbar = () => {
             </li>
 
             <li>
-              <button
+              <button className="logout"
                 onClick={() => {
                   localStorage.removeItem("token");
                   isLoggedInVar(false);
+                  window.location.replace("/")
                 }}
               >
                 LogOut
@@ -67,7 +68,7 @@ const Navbar = () => {
         ) : (
           <Fragment>
             <li>
-              <a href='/PostsScreen.html'>Posts</a>
+              <Link to={`/posts`}>Posts</Link>
             </li>
             <li>
               <a href='CollectionsScreen.html'> Collection</a>

@@ -80,10 +80,10 @@ const ImageView = ({ post }) => {
 
   return (
     <div className='image_view'>
-      <div class='image_header'>
+      <div className='image_header'>
         <h3>{post.post.tittle}</h3>
         {!loading && data && data.currentUser.id === post.post.user.id && (
-          <button class='button delete-post-button' onClick={() => onDelete()}>
+          <button className='button delete-post-button' onClick={() => onDelete()}>
             Delete Post
           </button>
         )}
